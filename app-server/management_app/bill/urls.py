@@ -4,12 +4,13 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 
 urlpatterns = [
-    # BILLS
+    # BILL
     # Create
 
     # Read
     path('bill/', views.BillList.as_view()),
     path('bill/<int:pk>', views.BillDetails.as_view()),
+    
     # Update
 
     # Delete
