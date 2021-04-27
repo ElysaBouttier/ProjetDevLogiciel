@@ -9,7 +9,7 @@ class Bill(models.Model):
     payementDate = models.DateTimeField(auto_now_add=False)
     price = models.DecimalField(max_digits=7, decimal_places=2)
  
- class BillProduct(models.Model):
+class BillProduct(models.Model):
     id = models.AutoField(primary_key=True)
-    idBills = models.ForeignKey(Bill, on_delete=models.cascad, blank=False, null=False)
+    idBills = models.ForeignKey(Bill, on_delete=models.CASCADE, blank=False, null=False)
     quantity = models.DecimalField(max_digits=7, decimal_places=2)
