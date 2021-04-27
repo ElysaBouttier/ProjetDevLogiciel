@@ -17,10 +17,10 @@ from django.shortcuts import render
 class BillList(generics.ListCreateAPIView):
     queryset = Bill.objects.all()
     serializer_class = BillSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class BillDetails(generics.RetrieveUpdateDestroyAPIView):
     queryset = Bill.objects.all()
     serializer_class = BillSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    #permission_classes = [permissions.IsAuthenticatedOrReadOnly]
