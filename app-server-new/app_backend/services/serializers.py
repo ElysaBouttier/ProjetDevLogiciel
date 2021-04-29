@@ -9,13 +9,13 @@ from rest_framework import serializers
 class BillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bill
-        fields = ['id', 'idClient', 'issuingDate', 'isPaid',
-                 'payementDate', 'price', 'listeProductName']
+        fields = ['id', 'issuingDate', 'isPaid',
+                 'payementDate', 'price', 'listProductName', 'idClient']
 
 class BillProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = BillProduct
-        fields = ['id', 'idBills', 'quantity']
+        fields = ['id', 'quantity', 'idBills', 'idProduct']
 
 # ------------------------------------------------------------
 # ------------------------CLIENT------------------------------ 
@@ -25,8 +25,8 @@ class BillProductSerializer(serializers.ModelSerializer):
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
-        fields = ['id', 'name', 'issuingDate', 'isPaid',
-                 'payementDate', 'price', 'listeProductName']
+        fields = ['id', 'name', 'firstName', 'mail',
+                 'registrationDate']
 
 
 # ------------------------------------------------------------
@@ -38,5 +38,5 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['id', 'name', 'stock',
-                 'picture', 'price']
+                 'picture', 'price', 'idBills']
 
