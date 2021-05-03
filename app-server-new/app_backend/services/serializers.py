@@ -21,7 +21,7 @@ class BillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bill
         fields = ['id', 'issuingDate', 'isPaid',
-                 'payementDate', 'price', 'listProductName', 'idClient']
+                 'payementDate', 'price', 'idClient']
 
 class BillProductSerializer(serializers.ModelSerializer):
     class Meta:

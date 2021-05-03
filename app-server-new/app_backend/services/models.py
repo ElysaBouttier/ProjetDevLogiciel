@@ -26,12 +26,9 @@ class Bill(models.Model):
     isPaid = models.BooleanField(null=False)
     payementDate = models.DateTimeField(auto_now_add=False)
     price = models.DecimalField(max_digits=7, decimal_places=2)
-    listProductName = models.ForeignKey('BillProduct',  on_delete=models.CASCADE, blank=True, null=True)
+    # listProductName = models.
     idClient = models.ForeignKey('Client',  on_delete=models.CASCADE, blank=True, null=True)
 
-
-    def __str__(self):
-        return self.id
  
 
 # ------------------------------------------------------------
@@ -44,7 +41,7 @@ class Product(models.Model):
     stock = models.IntegerField()
     picture = models.CharField(max_length=80)
     price = models.DecimalField(max_digits=7, decimal_places=2)
-    idBills = models.ForeignKey(Bill, on_delete=models.CASCADE, blank=True, null=True)
+    idBills = models.ForeignKey('Bill', on_delete=models.CASCADE, blank=True, null=True)
    
     def __str__(self):
         return self.name 
