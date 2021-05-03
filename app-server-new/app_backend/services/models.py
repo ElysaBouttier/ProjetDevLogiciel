@@ -16,22 +16,6 @@ class Client(models.Model):
     def __str__(self):
         return self.name
 
-
-# ------------------------------------------------------------
-# ------------------------PRODUCT----------------------------- 
-# ------------------------------------------------------------
-
-class Product(models.Model):
-    id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=40)
-    stock = models.IntegerField()
-    picture = models.CharField(max_length=80)
-    price = models.DecimalField(max_digits=7, decimal_places=2)
-    idBills = models.ForeignKey(Bill, on_delete=models.CASCADE, blank=True, null=True)
-   
-    def __str__(self):
-        return self.name 
-
 # ------------------------------------------------------------
 # ------------------------BILL-------------------------------- 
 # ------------------------------------------------------------
@@ -49,6 +33,22 @@ class Bill(models.Model):
     def __str__(self):
         return self.id
  
+
+# ------------------------------------------------------------
+# ------------------------PRODUCT----------------------------- 
+# ------------------------------------------------------------
+
+class Product(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=40)
+    stock = models.IntegerField()
+    picture = models.CharField(max_length=80)
+    price = models.DecimalField(max_digits=7, decimal_places=2)
+    idBills = models.ForeignKey(Bill, on_delete=models.CASCADE, blank=True, null=True)
+   
+    def __str__(self):
+        return self.name 
+
 class BillProduct(models.Model):
     id = models.AutoField(primary_key=True)
     quantity = models.DecimalField(max_digits=7, decimal_places=2)
