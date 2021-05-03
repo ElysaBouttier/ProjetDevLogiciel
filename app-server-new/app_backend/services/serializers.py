@@ -2,9 +2,20 @@ from services.models import Bill, BillProduct, Client, Product
 from rest_framework import serializers
 
 # ------------------------------------------------------------
-# ------------------------BILL-------------------------------- 
+# ------------------------CLIENT------------------------------ 
 # ------------------------------------------------------------
 
+
+class ClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields = ['id', 'name', 'firstName', 'mail',
+                 'registrationDate']
+
+
+# ------------------------------------------------------------
+# ------------------------BILL-------------------------------- 
+# ------------------------------------------------------------
 
 class BillSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,16 +28,6 @@ class BillProductSerializer(serializers.ModelSerializer):
         model = BillProduct
         fields = ['id', 'quantity', 'idBills', 'idProduct']
 
-# ------------------------------------------------------------
-# ------------------------CLIENT------------------------------ 
-# ------------------------------------------------------------
-
-
-class ClientSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Client
-        fields = ['id', 'name', 'firstName', 'mail',
-                 'registrationDate']
 
 
 # ------------------------------------------------------------
