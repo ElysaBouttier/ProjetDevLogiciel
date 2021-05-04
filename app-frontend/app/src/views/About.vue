@@ -1,5 +1,19 @@
 <template>
   <div class="about">
+    <v-container fluid>
+      <v-row align="center">
+        <v-col
+          class="d-flex"
+          cols="12"
+          sm="6"
+        >
+          <v-select
+            :items="items"
+            label="Faites votre choix"
+          ></v-select>
+        </v-col>
+      </v-row>
+    </v-container>
     <template v-if="!showFormUpdate">
       <Data :data="data" v-for="data in datas" :key="data.id" />
       <v-fab-transition>
@@ -16,7 +30,6 @@
         </v-btn>
       </v-fab-transition>
     </template>
-
   </div>
 </template>
 
@@ -34,6 +47,12 @@ export default {
   },
   data: () => ({
     showFormUpdate: false,
+    selectedItem: 1,
+    items: [
+      { text: "Products", icon: "mdi-clock" },
+      { text: "Clients", icon: "mdi-account" },
+      { text: "Bills", icon: "mdi-flag" },
+    ],
   }),
   computed: {
     ...mapState({
@@ -45,7 +64,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-
 </style>
 
