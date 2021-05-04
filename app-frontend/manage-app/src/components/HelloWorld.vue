@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-
+    <p> {{pays}}</p>
   </div>
 </template>
 
