@@ -18,11 +18,11 @@
       </v-main>
 
         <v-btn>
-          <router-link to="/About">About</router-link>
+          <router-link to="/about">About</router-link>
         </v-btn>
 
         <v-btn>
-          <router-link to="/Home">Home</router-link>
+          <router-link to="/home">Home</router-link>
         </v-btn>
 
         <v-btn>
