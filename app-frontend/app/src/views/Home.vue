@@ -3,6 +3,18 @@
     <div>
       <p>This is the Home page</p>
     </div>
+    <v-container fluid>
+      <v-row align="center">
+        <v-col class="d-flex" cols="12" sm="6">
+          <v-select
+            :items="items"
+            label="Faites votre choix"
+            v-model="choice"
+          ></v-select>
+        </v-col>
+      </v-row>
+    </v-container>
+
     <table>
       <thead v-html="renderTableHeader"></thead>
       <tbody v-html="renderTableData"></tbody>
@@ -11,32 +23,41 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
 import axios from "axios";
 
 export default {
   name: "home",
   props: {},
 
-  //   components: {},
   data: () => ({
     bills: [],
+    selectedItem: 1,
+    items: [
+      { text: "Products", icon: "mdi-clock", value: "PRODUCTS" },
+      { text: "Clients", icon: "mdi-account", value: "CLIENTS" },
+      { text: "Bills", icon: "mdi-flag", value: "BILLS" },
+    ],
+
+    choice: null,
   }),
   computed: {
     renderTableData() {
+      if (!this.bills.length) {
+        return;
+      }
+
+      let objectKeys = Object.keys(this.bills[0]);
+
       return this.bills
         .map((bill) => {
-          const {
-            id,
-            issuingDate,
-            isPaid,
-            payementDate,
-            price,
-            idClient,
-          } = bill;
+          const body = [];
 
-          return `<tr key=${id}><td>${id}</td><td>${issuingDate}</td><td>${isPaid}</td><td>${payementDate}</td><td>${price}</td><td>${idClient}</td></tr>`;
+          for (const key of objectKeys) {
+            const html = `<td>${bill[key]}</td>`;
+            body.push(html);
+          }
+
+          return `<tr>${body}</tr>`;
         })
         .join()
         .replace(/,/g, "");
@@ -57,28 +78,32 @@ export default {
     },
   },
 
+  watch: {
+    choice: function (value) {
+      if (value === "PRODUCTS") {
+        this.apiCall("product");
+      }
+      if (value === "CLIENTS") {
+        this.apiCall("client");
+      }
+      if (value === "BILLS") {
+        this.apiCall("bill");
+      }
+    },
+  },
+
   methods: {
-    // renderTableData() {
-    //   return this.bills.map((bill) => {
-    //     const { id, issuingDate, isPaid, payementDate, price, idClient } = bill;
-    //     return (
-    //       <tr key={id}>
-    //         <td>{issuingDate}</td>
-    //         <td>{isPaid}</td>
-    //         <td>{payementDate}</td>
-    //         <td>{price}</td>
-    //         <td>{idClient}</td>
-    //       </tr>
-    //     );
-    //   });
-    // },
+    async apiCall(resource) {
+      try {
+        const url = `http://127.0.0.1:8000/${resource}/`;
+        const { data } = await axios.get(url);
+
+        this.bills = data;
+      } catch (e) {
+        console.error(e);
+      }
+    },
   },
-  mounted() {
-    axios.get("http://127.0.0.1:8000/bill/").then((response) => {
-      this.bills = response.data;
-    });
-  },
-  beforeMount() {},
 };
 </script>
 
@@ -87,6 +112,6 @@ export default {
 .container {
   flex-direction: column;
   margin: auto;
-  margin-top: 21%;
+  margin-top: 5%;
 }
 </style>
