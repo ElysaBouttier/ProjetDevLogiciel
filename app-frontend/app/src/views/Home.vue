@@ -15,10 +15,12 @@
       </v-row>
     </v-container>
 
-    <table>
+    <v-simple-table
+    fixed-header
+    height="300px">
       <thead v-html="renderTableHeader"></thead>
       <tbody v-html="renderTableData"></tbody>
-    </table>
+    </v-simple-table>
   </div>
 </template>
 

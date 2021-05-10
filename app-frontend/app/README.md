@@ -1,4 +1,4 @@
-# gilbert-app
+# manage-app
 
 ## Project setup
 ```
