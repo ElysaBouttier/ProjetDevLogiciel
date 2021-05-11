@@ -1,5 +1,6 @@
 <template>
-  <div class="home">
+  <div class="home"
+   @click="getHeaderApiRequest">
     <div>
       <p>This is the Home page</p>
     </div>
@@ -12,7 +13,7 @@
       v-model="dialog"
       max-width="500px"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ attrs }">
         <v-btn
           color="primary"
           dark
@@ -28,14 +29,17 @@
           <span class="headline">Add new {{renderModalTitle}}</span>
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text
+        >
           <v-container>
             <v-row>
               <v-col
                 cols="12"
                 sm="6"
                 md="4"
+                v-for="item in imputName" :key="item"
               >
+              {{item}}
               <v-text-field
                 :rules="rules"
                 hide-details="auto"
@@ -69,7 +73,8 @@
     <!-- ---------------------------------------- -->
     <!--  ---------------SELECTOR---------------- -->
     <!-- ---------------------------------------- -->
-    <v-container fluid>
+    <v-container fluid
+    >
       <v-row align="center">
         <v-col class="d-flex" cols="12" sm="6">
           <v-select
@@ -109,6 +114,7 @@ export default {
         value => !!value || 'Required.',
         value => (value && value.length >= 3) || 'Min 3 characters',
       ],
+    imputName: [],
 
     // ---------------SELECTOR----------------
     selectedItem: 1,
@@ -145,18 +151,6 @@ export default {
         return ' ';
       }
     },
-    renderModalImput(){
-      if(this.requestAPI){
-        return null
-      }
-      else{
-        return ' '
-      }
-    },
-    // },
-    // validateModalImput(){
-
-    // },
 
     // ---------------SELECTOR----------------
     
@@ -188,8 +182,8 @@ export default {
       if (!this.requestAPI.length) {
         return;
       }
-      // console.log(this.requestAPI[0]);
       let header = Object.keys(this.requestAPI[0]);
+      // this.imputName = header;
       return header
         .map((key, index) => {
           return `<th key=${index}>${key.toUpperCase()}</th>`;
@@ -198,13 +192,6 @@ export default {
         .replace(/,/g, "");
     },
 
-// Modal windows
-    // close () {
-    //   this.dialog = false
-    // },
-    // save () {
-    //   return this.close()
-    // },
   },
 
   watch: {
@@ -220,6 +207,16 @@ export default {
       }
     },
   },
+  mounted:
+    function() {
+      if (!this.requestAPI.length) {
+        return;
+      }
+      let header = Object.keys(this.requestAPI[0]);
+      this.imputName = header;
+            console.log("this.imputName", this.imputName);
+    }
+  ,
 
   methods: {
     async apiCall(resource) {
@@ -231,6 +228,14 @@ export default {
       } catch (e) {
         console.error(e);
       }
+    },
+    getHeaderApiRequest() {
+      if (!this.requestAPI.length) {
+        return;
+      }
+      let header = Object.keys(this.requestAPI[0]);
+      this.imputName = header;
+      console.log("this.imputName", this.imputName);
     },
   },
 };
