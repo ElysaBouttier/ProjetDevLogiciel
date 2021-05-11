@@ -37,12 +37,13 @@
                 cols="12"
                 sm="6"
                 md="4"
-                v-for="item in imputName" :key="item"
               >
-              {{item}}
               <v-text-field
                 :rules="rules"
                 hide-details="auto"
+                v-for="element in imputName"
+                  v-bind:key="element"
+                  :label="element"
               ></v-text-field>
               </v-col>
             </v-row>
