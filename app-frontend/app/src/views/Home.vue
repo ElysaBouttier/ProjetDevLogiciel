@@ -37,12 +37,13 @@
                 cols="12"
                 sm="6"
                 md="4"
+                v-for="element in imputName"
+                  v-bind:key="element"
               >
               <v-text-field
                 :rules="rules"
                 hide-details="auto"
-                v-for="element in imputName"
-                  v-bind:key="element"
+                
                   :label="element"
               ></v-text-field>
               </v-col>
@@ -128,6 +129,9 @@ export default {
       { text: "Clients", icon: "mdi-account", value: "CLIENTS" },
       { text: "Bills", icon: "mdi-flag", value: "BILLS" },
     ],
+    updateWord: 'Update',
+    deleteWord: 'Delete',
+    theadName: [],
   }),
 
   computed: {
@@ -173,17 +177,37 @@ export default {
             body.push(html);
           }
 
-          return `<tr>${body}</tr>`;
+          return `<tr>
+          
+          ${body}
+          <td> <button type="button" @click="updateItem()"> Update </button> </td>
+          <td> <button type="button" @click="deleteItem()"> Delete </button></td>
+          </tr>`;
         })
         .join()
         .replace(/,/g, "");
     },
 
-    renderTableHeader() {
+    // renderTableHeader() {
+    //   if (!this.requestAPI.length) {
+    //     return;
+    //   }
+    //   let header = Object.keys(this.requestAPI[0]);
+    //   // this.imputName = header;
+    //   return header
+    //     .map((key, index) => {
+    //       return `<th key=${index}>${key.toUpperCase()}</th>`;
+    //     })
+    //     .join()
+    //     .replace(/,/g, "");
+    // },
+
+
+    renderTableHeader(){
       if (!this.requestAPI.length) {
         return;
       }
-      let header = Object.keys(this.requestAPI[0]);
+      let header = this.theadName
       // this.imputName = header;
       return header
         .map((key, index) => {
@@ -230,13 +254,17 @@ export default {
         console.error(e);
       }
     },
+    
     getHeaderApiRequest() {
       if (!this.requestAPI.length) {
         return;
       }
       let header = Object.keys(this.requestAPI[0]);
       this.imputName = header;
-      console.log("this.imputName", this.imputName);
+      let headerTable = header;
+      headerTable.push(this.updateWord, this.deleteWord)
+      this.theadName=headerTable;
+      console.log("headerTable", headerTable);
     },
   },
 };
