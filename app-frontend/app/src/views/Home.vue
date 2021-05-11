@@ -23,11 +23,12 @@
           New Item
         </v-btn>
       </template>
+
+      <!-- when dialog is true : open v-card -->
       <v-card>
         <v-card-title>
           <span class="headline">Add new {{renderModalTitle}}</span>
         </v-card-title>
-
         <v-card-text>
           <v-container>
             <v-row>
@@ -35,11 +36,16 @@
                 cols="12"
                 sm="6"
                 md="4"
+                  
               >
-              <v-text-field
-                :rules="rules"
-                hide-details="auto"
-              ></v-text-field>
+
+                <v-text-field
+                  v-for="element in this.headerRequest"
+                  v-bind:key="element"
+                  :label="element"
+                  required
+                ></v-text-field>`;
+
               </v-col>
             </v-row>
           </v-container>
@@ -109,7 +115,8 @@ export default {
         value => !!value || 'Required.',
         value => (value && value.length >= 3) || 'Min 3 characters',
       ],
-
+    headerRequest:[],
+    html: null,
     // ---------------SELECTOR----------------
     selectedItem: 1,
     choice: null,
@@ -145,14 +152,24 @@ export default {
         return ' ';
       }
     },
-    renderModalImput(){
-      if(this.requestAPI){
-        return null
-      }
-      else{
-        return ' '
-      }
-    },
+
+    // renderModalImput(){
+    //   const arrayHtml = [];
+    //   for (const headerTitle of this.headerRequest){
+    //     headerTitle.forEach(function(element){
+    //       const html = `
+    //         <v-text-field
+    //           label="${element}"
+    //           required
+    //         ></v-text-field>`;
+    //       console.log(html)  
+    //       arrayHtml.push(html)
+    //     })        
+    //   }
+      
+      
+
+    // },
     // },
     // validateModalImput(){
 
@@ -178,7 +195,11 @@ export default {
             body.push(html);
           }
 
-          return `<tr>${body}</tr>`;
+          return `<tr> 
+          <td> ${body} </td>
+          <td> <button type='button' @click="update()"> Update </button> </td>
+          <td> <button type='button' @click="delete()"> Delete </button> </td>
+          </tr>`;
         })
         .join()
         .replace(/,/g, "");
@@ -190,12 +211,15 @@ export default {
       }
       // console.log(this.requestAPI[0]);
       let header = Object.keys(this.requestAPI[0]);
+      let headerRequest = this.headerRequest
+      headerRequest.push(header)
       return header
         .map((key, index) => {
           return `<th key=${index}>${key.toUpperCase()}</th>`;
         })
         .join()
         .replace(/,/g, "");
+
     },
 
 // Modal windows
