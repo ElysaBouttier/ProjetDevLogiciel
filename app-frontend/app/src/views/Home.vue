@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" @click="getHeaderApiRequest">
     <div>
       <p>This is the Home page</p>
     </div>
@@ -32,13 +32,13 @@
                 cols="12"
                 sm="6"
                 md="4"
-                v-for="(field, i) in form"
+                v-for="(field, i) in fields"
                 :key="i"
               >
                 <v-text-field
-                  :rules="rules"
                   hide-details="auto"
-                  :label="field"
+                  :label="field.label"
+                  v-model="form[i]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -73,10 +73,27 @@
     <!-- ---------------------------------------- -->
     <!-- ----------------TABLE------------------- -->
     <!-- ---------------------------------------- -->
-    <v-simple-table fixed-header height="300px">
-      <thead v-html="renderTableHeader"></thead>
-      <tbody v-html="renderTableData"></tbody>
-    </v-simple-table>
+
+    <table v-if="requestAPI.length">
+      <thead>
+        <tr>
+          <th v-for="(data, index) in requestAPI[0]" :key="index">
+            {{ index }}
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(data, index) in requestAPI" :key="index">
+          <td v-for="(prop, i) in data" :key="i">{{ prop }}</td>
+
+          <td>
+            <button>Update</button> |
+            <button @click="deleteItem(resource, data['id'])">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -95,11 +112,8 @@ export default {
       (value) => (value && value.length >= 3) || "Min 3 characters",
     ],
 
-    imputName: [],
-    form: {
-      name: "",
-      stock: 0,
-    },
+    fields: [],
+    form: {},
 
     // ---------------SELECTOR----------------
     selectedItem: 1,
@@ -138,73 +152,27 @@ export default {
         return " ";
       }
     },
-
-    // ---------------SELECTOR----------------
-
-    // ----------------TABLE------------------
-    // Show data inside the table  READ of CRUD
-    renderTableData() {
-      if (!this.requestAPI.length) {
-        return;
-      }
-
-      let objectKeys = Object.keys(this.requestAPI[0]);
-
-      return this.requestAPI
-        .map((bill) => {
-          const body = [];
-
-          for (const key of objectKeys) {
-            const html = `<td>${bill[key]}</td>`;
-            body.push(html);
-          }
-
-          return `<tr>
-          
-          ${body}
-          <td> <button type="button" @click="updateItem()"> Update </button> </td>
-          <td> <button type="button" @click="deleteItem('${this.resource}', ${bill['id']})"> Delete </button></td>
-          </tr>`;
-        })
-        .join();
-      // .replace(/,/g, "");
-    },
-
-    //
-    renderTableHeader() {
-      //
-      if (!this.requestAPI.length) {
-        return;
-      }
-
-      //
-      let headers = Object.keys(this.requestAPI[0]);
-      headers = headers.concat(this.theadName);
-
-      //
-      return headers
-        .map((header, index) => {
-          return `<th key=${index}>${header.toUpperCase()}</th>`;
-        })
-        .join()
-        .replace(/,/g, "");
-    },
   },
 
   watch: {
     choice: async function (value) {
       if (value === "PRODUCTS") {
         await this.apiCall("product");
+        await this.formRequest("product");
         // const fields = Object.keys(data[0]);
         this.resource = "product";
       }
       if (value === "CLIENTS") {
         this.apiCall("client");
+
         this.resource = "client";
+        await this.formRequest("client");
       }
       if (value === "BILLS") {
         this.apiCall("bill");
+
         this.resource = "bill";
+        await this.formRequest("bill");
       }
     },
   },
@@ -224,10 +192,11 @@ export default {
     },
 
     async deleteItem(resource, id) {
-      console.log("Bonjour");
       try {
         const url = `http://127.0.0.1:8000/${resource}/${id}`;
         const { data } = await axios.delete(url, { data: { id } });
+
+        await this.apiCall(resource);
 
         return data;
       } catch (e) {
@@ -235,16 +204,21 @@ export default {
       }
     },
 
-    getHeaderApiRequest() {
-      if (!this.requestAPI.length) {
-        return;
+    async formRequest(resource) {
+      try {
+        const url = `http://127.0.0.1:8000/${resource}/`;
+
+        const { data } = await axios.options(url);
+
+        const fields = data.actions.POST;
+        delete fields.id;
+
+        this.fields = fields;
+
+        return data;
+      } catch (e) {
+        console.error(e);
       }
-      let header = Object.keys(this.requestAPI[0]);
-      this.imputName = header;
-      let headerTable = header;
-      headerTable.push(this.updateWord, this.deleteWord);
-      this.theadName = headerTable;
-      console.log("headerTable", headerTable);
     },
   },
 };
