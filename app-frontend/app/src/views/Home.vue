@@ -1,6 +1,5 @@
 <template>
-  <div class="home"
-   @click="getHeaderApiRequest">
+  <div class="home">
     <div>
       <p>This is the Home page</p>
     </div>
@@ -9,10 +8,7 @@
     <!--  ---------------MODAL------------------- -->
     <!-- ---------------------------------------- -->
 
-    <v-dialog
-      v-model="dialog"
-      max-width="500px"
-    >
+    <v-dialog v-model="dialog" max-width="500px">
       <template v-slot:activator="{ attrs }">
         <v-btn
           color="primary"
@@ -26,26 +22,24 @@
       </template>
       <v-card>
         <v-card-title>
-          <span class="headline">Add new {{renderModalTitle}}</span>
+          <span class="headline">Add new {{ renderModalTitle }}</span>
         </v-card-title>
 
-        <v-card-text
-        >
+        <v-card-text>
           <v-container>
             <v-row>
               <v-col
                 cols="12"
                 sm="6"
                 md="4"
-                v-for="element in imputName"
-                  v-bind:key="element"
+                v-for="(field, i) in form"
+                :key="i"
               >
-              <v-text-field
-                :rules="rules"
-                hide-details="auto"
-                
+                <v-text-field
+                  :rules="rules"
+                  hide-details="auto"
                   :label="element"
-              ></v-text-field>
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -53,30 +47,18 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="blue darken-1"
-            text
-            @click="dialog = false"
-          >
+          <v-btn color="blue darken-1" text @click="dialog = false">
             Cancel
           </v-btn>
-          <v-btn
-            color="blue darken-1"
-            text
-            
-          >
-            Save
-          </v-btn>
+          <v-btn color="blue darken-1" text> Save </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-
     <!-- ---------------------------------------- -->
     <!--  ---------------SELECTOR---------------- -->
     <!-- ---------------------------------------- -->
-    <v-container fluid
-    >
+    <v-container fluid>
       <v-row align="center">
         <v-col class="d-flex" cols="12" sm="6">
           <v-select
@@ -88,13 +70,10 @@
       </v-row>
     </v-container>
 
-
     <!-- ---------------------------------------- -->
     <!-- ----------------TABLE------------------- -->
     <!-- ---------------------------------------- -->
-    <v-simple-table
-    fixed-header
-    height="300px">
+    <v-simple-table fixed-header height="300px">
       <thead v-html="renderTableHeader"></thead>
       <tbody v-html="renderTableData"></tbody>
     </v-simple-table>
@@ -110,13 +89,17 @@ export default {
 
   data: () => ({
     // ---------------MODAL-------------------
-    editedItem: {name: 'nom', calories: 'calorie'},
     dialog: false,
     rules: [
-        value => !!value || 'Required.',
-        value => (value && value.length >= 3) || 'Min 3 characters',
-      ],
+      (value) => !!value || "Required.",
+      (value) => (value && value.length >= 3) || "Min 3 characters",
+    ],
+
     imputName: [],
+    form: {
+      name: "",
+      stock: 0
+    },
 
     // ---------------SELECTOR----------------
     selectedItem: 1,
@@ -124,41 +107,39 @@ export default {
 
     // ----------------TABLE------------------
     requestAPI: [],
+
     items: [
       { text: "Products", icon: "mdi-clock", value: "PRODUCTS" },
       { text: "Clients", icon: "mdi-account", value: "CLIENTS" },
       { text: "Bills", icon: "mdi-flag", value: "BILLS" },
     ],
-    updateWord: 'Update',
-    deleteWord: 'Delete',
-    theadName: [],
+
+    theadName: ["Update", "Delete"],
   }),
 
   computed: {
     // ---------------MODAL-------------------
 
-    renderModalTitle(){
-      if(this.requestAPI){
-        if(this.choice == "PRODUCTS"){
-          return "product"
+    renderModalTitle() {
+      if (this.requestAPI) {
+        if (this.choice == "PRODUCTS") {
+          return "product";
         }
-        if(this.choice == "CLIENTS"){
-          return "client"
+        if (this.choice == "CLIENTS") {
+          return "client";
         }
-        if(this.choice == "BILLS"){
-          return "bill"
+        if (this.choice == "BILLS") {
+          return "bill";
+        } else {
+          return "";
         }
-        else{
-          return ""
-        }
-      }
-      else{
-        return ' ';
+      } else {
+        return " ";
       }
     },
 
     // ---------------SELECTOR----------------
-    
+
     // ----------------TABLE------------------
     // Show data inside the table  READ of CRUD
     renderTableData() {
@@ -188,41 +169,34 @@ export default {
         .replace(/,/g, "");
     },
 
-    // renderTableHeader() {
-    //   if (!this.requestAPI.length) {
-    //     return;
-    //   }
-    //   let header = Object.keys(this.requestAPI[0]);
-    //   // this.imputName = header;
-    //   return header
-    //     .map((key, index) => {
-    //       return `<th key=${index}>${key.toUpperCase()}</th>`;
-    //     })
-    //     .join()
-    //     .replace(/,/g, "");
-    // },
-
-
-    renderTableHeader(){
+    //
+    renderTableHeader() {
+      //
       if (!this.requestAPI.length) {
         return;
       }
-      let header = this.theadName
-      // this.imputName = header;
-      return header
-        .map((key, index) => {
-          return `<th key=${index}>${key.toUpperCase()}</th>`;
+
+      //
+      let headers = Object.keys(this.requestAPI[0]);
+      headers = headers.concat(this.theadName);
+
+      //
+      return headers
+        .map((header, index) => {
+          return `<th key=${index}>${header.toUpperCase()}</th>`;
         })
         .join()
         .replace(/,/g, "");
     },
-
   },
 
   watch: {
-    choice: function (value) {
+    choice: async function (value) {
       if (value === "PRODUCTS") {
-        this.apiCall("product");
+        const data = await this.apiCall("product");
+        const fields = Object.keys(data[0]);
+
+        console.log(fields);
       }
       if (value === "CLIENTS") {
         this.apiCall("client");
@@ -232,16 +206,6 @@ export default {
       }
     },
   },
-  mounted:
-    function() {
-      if (!this.requestAPI.length) {
-        return;
-      }
-      let header = Object.keys(this.requestAPI[0]);
-      this.imputName = header;
-            console.log("this.imputName", this.imputName);
-    }
-  ,
 
   methods: {
     async apiCall(resource) {
@@ -250,11 +214,13 @@ export default {
         const { data } = await axios.get(url);
 
         this.requestAPI = data;
+
+        return data;
       } catch (e) {
         console.error(e);
       }
     },
-    
+
     getHeaderApiRequest() {
       if (!this.requestAPI.length) {
         return;
@@ -262,8 +228,8 @@ export default {
       let header = Object.keys(this.requestAPI[0]);
       this.imputName = header;
       let headerTable = header;
-      headerTable.push(this.updateWord, this.deleteWord)
-      this.theadName=headerTable;
+      headerTable.push(this.updateWord, this.deleteWord);
+      this.theadName = headerTable;
       console.log("headerTable", headerTable);
     },
   },
