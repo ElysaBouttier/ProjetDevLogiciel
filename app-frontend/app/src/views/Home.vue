@@ -38,7 +38,7 @@
                 <v-text-field
                   :rules="rules"
                   hide-details="auto"
-                  :label="element"
+                  :label="field"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -98,7 +98,7 @@ export default {
     imputName: [],
     form: {
       name: "",
-      stock: 0
+      stock: 0,
     },
 
     // ---------------SELECTOR----------------
@@ -115,6 +115,7 @@ export default {
     ],
 
     theadName: ["Update", "Delete"],
+    resource: "",
   }),
 
   computed: {
@@ -162,11 +163,11 @@ export default {
           
           ${body}
           <td> <button type="button" @click="updateItem()"> Update </button> </td>
-          <td> <button type="button" @click="deleteItem()"> Delete </button></td>
+          <td> <button type="button" @click="deleteItem('${this.resource}', ${bill['id']})"> Delete </button></td>
           </tr>`;
         })
-        .join()
-        .replace(/,/g, "");
+        .join();
+      // .replace(/,/g, "");
     },
 
     //
@@ -193,16 +194,17 @@ export default {
   watch: {
     choice: async function (value) {
       if (value === "PRODUCTS") {
-        const data = await this.apiCall("product");
-        const fields = Object.keys(data[0]);
-
-        console.log(fields);
+        await this.apiCall("product");
+        // const fields = Object.keys(data[0]);
+        this.resource = "product";
       }
       if (value === "CLIENTS") {
         this.apiCall("client");
+        this.resource = "client";
       }
       if (value === "BILLS") {
         this.apiCall("bill");
+        this.resource = "bill";
       }
     },
   },
@@ -214,6 +216,18 @@ export default {
         const { data } = await axios.get(url);
 
         this.requestAPI = data;
+
+        return data;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
+    async deleteItem(resource, id) {
+      console.log("Bonjour");
+      try {
+        const url = `http://127.0.0.1:8000/${resource}/${id}`;
+        const { data } = await axios.delete(url, { data: { id } });
 
         return data;
       } catch (e) {
