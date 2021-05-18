@@ -1,4 +1,4 @@
-from services.models import Bill, BillProduct, Client, Product
+from .models import Bill, BillProduct, Client, Product
 from rest_framework import serializers
 
 # ------------------------------------------------------------

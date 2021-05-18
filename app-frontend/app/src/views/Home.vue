@@ -1,5 +1,5 @@
 <template>
-  <div class="home" @click="getHeaderApiRequest">
+  <div class="home" >
     <div>
       <p>This is the Home page</p>
     </div>
@@ -114,6 +114,7 @@ export default {
 
     fields: [],
     form: {},
+    itemsInFields: [],
 
     // ---------------SELECTOR----------------
     selectedItem: 1,
@@ -128,7 +129,6 @@ export default {
       { text: "Bills", icon: "mdi-flag", value: "BILLS" },
     ],
 
-    theadName: ["Update", "Delete"],
     resource: "",
   }),
 
@@ -209,11 +209,30 @@ export default {
         const url = `http://127.0.0.1:8000/${resource}/`;
 
         const { data } = await axios.options(url);
-
         const fields = data.actions.POST;
         delete fields.id;
-
         this.fields = fields;
+
+      Object.entries(this.fields).map(item => {
+        console.log("item[1]" , item[1].type);
+        if (item[1].type == "string"){
+          console.log("coucou");
+        }
+        if(item[1].type == "datetime"){
+          console.log("coucou");
+        }
+        if(item[1].type == "integer"){
+          console.log("coucou");
+        }
+        if(item[1].type == "decimal"){
+          console.log("coucou");
+        }
+        if(item[1].type == "field"){
+          console.log("coucou");
+        }
+      })
+
+
 
         return data;
       } catch (e) {
