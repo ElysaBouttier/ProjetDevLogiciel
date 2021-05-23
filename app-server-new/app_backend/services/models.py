@@ -50,8 +50,7 @@ class BillProduct(models.Model):
     idBills = models.ForeignKey('Bill', on_delete=models.CASCADE)
     idProduct = models.ForeignKey('Product', on_delete=models.CASCADE)
 
-    def __len__(self):
-        return str(self.id)
+  
         
 
 

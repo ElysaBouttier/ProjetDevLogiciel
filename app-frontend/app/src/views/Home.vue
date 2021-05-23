@@ -27,18 +27,30 @@
 
         <v-card-text>
           <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-                md="4"
-                v-for="(field, i) in fields"
-                :key="i"
-              >
+            <v-row v-for="(field, i) in fields" :key="i">
+                
+              <v-col cols="12" >
                 <p>{{field.label}}</p>
-                <component :is="getFieldFormType(field.type)" :label="field.label" >
-                  
-                </component>
+
+                  <v-text-field v-if="field.type == 'string'"
+                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
+                   
+                   <v-checkbox v-else-if="field.type == 'boolean'"
+                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-checkbox>
+
+                   <v-text-field v-else-if="field.type == 'datetime'"
+                   :label="field.label" type="date" @change="ev => inputChanged(ev, field)"></v-text-field>
+
+                   <v-text-field v-else-if="field.type == 'integer'"
+                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
+                   <v-text-field v-else-if="field.type == 'decimal'"
+                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
+
+                   <v-select v-else-if="field.type == 'field'"
+                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-select>
+                
+                <!-- <component :is="getFieldFormType(field.type)" :label="field.label" >
+                </component> -->
 
               </v-col>
             </v-row>
@@ -112,7 +124,7 @@
 <script>
 import axios from "axios";
 
-import { VTextField, VCheckbox, VDatePicker } from "vuetify/lib";
+import { VTextField, VCheckbox } from "vuetify/lib";
 
 export default {
   name: "home",
@@ -121,7 +133,7 @@ export default {
   components: {
     VTextField,
     VCheckbox,
-    VDatePicker,
+    // VDatePicker,
   },
 
   data: () => ({
@@ -130,6 +142,11 @@ export default {
     dialog: false,
     // array contain objects from request api data.action.POST
     fields: [],
+
+    //
+    userImput:{
+
+    },
     
 
     // ---------------SELECTOR----------------
@@ -203,25 +220,35 @@ export default {
 
 
   methods: {
-    getFieldFormType(type) {
-      if (type === "string") {
-        return "v-text-field";
-      }
-      if (type === "boolean") {
-        return "v-checkbox";
-      }
-      if (type === "datetime") {
-        return "v-date-picker";
-      }
-      if (type === "integer" || type === "decimal") {
-        return "v-text-field";
-      }
-      if (type === "field") {
-        return "v-select";
-      }
 
-      return null;
-    },
+    inputChanged(ev, field){
+      console.log("ev" , ev);
+      console.log("field" , field);
+      let apiField = field.label[0].toLowerCase() + field.label.substring(1);
+      this.userImput[apiField]= ev;
+
+      // au clic sur save faire requete axios pour save userInput. Attention si 
+      // datetime => trsf en iso
+    },  
+    // getFieldFormType(type) {
+    //   if (type === "string") {
+    //     return "v-text-field";
+    //   }
+    //   if (type === "boolean") {
+    //     return "v-checkbox";
+    //   }
+    //   if (type === "datetime") {
+    //     return "v-date-picker";
+    //   }
+    //   if (type === "integer" || type === "decimal") {
+    //     return "v-text-field";
+    //   }
+    //   if (type === "field") {
+    //     return "v-select";
+    //   }
+
+    //   return null;
+    // },
 
     getFieldType(label) {
       // example : label = "IssuingDate"
@@ -277,6 +304,9 @@ export default {
 
           this.fields.push(field);
         });
+
+        this.userImput={};
+        
 
         // return data;
       } catch (e) {
