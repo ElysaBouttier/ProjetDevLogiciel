@@ -10,6 +10,7 @@
 
     <v-dialog v-model="dialog" max-width="500px">
       <template v-slot:activator="{ attrs }">
+        <!-- Button New Item open modal windows -->
         <v-btn
           color="primary"
           dark
@@ -21,37 +22,37 @@
         </v-btn>
       </template>
       <v-card>
+        <!-- Title changes with the select choice -->
         <v-card-title>
           <span class="headline">Add new {{ renderModalTitle }}</span>
         </v-card-title>
 
         <v-card-text>
           <v-container>
+            <!-- fiels => api request.action.post get Type and label from the request -->
             <v-row v-for="(field, i) in fields" :key="i">
-                
               <v-col cols="12" >
-                <p>{{field.label}}</p>
+                <!-- Foreach fiel check the fiel type and show the corresponding input  -->
 
-                  <v-text-field v-if="field.type == 'string'"
-                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
-                   
-                   <v-checkbox v-else-if="field.type == 'boolean'"
-                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-checkbox>
+                <!-- inputChanged  -->
+                <v-text-field v-if="field.type == 'string'"
+                  :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
+                  
+                  <v-checkbox v-else-if="field.type == 'boolean'"
+                  :label="field.label" @change="ev => inputChanged(ev, field)"></v-checkbox>
 
-                   <v-text-field v-else-if="field.type == 'datetime'"
-                   :label="field.label" type="date" @change="ev => inputChanged(ev, field)"></v-text-field>
+                  <v-text-field v-else-if="field.type == 'datetime'"
+                  :label="field.label" type="date" @change="ev => inputChanged(ev, field)"></v-text-field>
 
-                   <v-text-field v-else-if="field.type == 'integer'"
-                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
-                   <v-text-field v-else-if="field.type == 'decimal'"
-                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
+                  <v-text-field v-else-if="field.type == 'integer'"
+                  :label="field.label" type="number" @change="ev => inputChanged(ev, field)"></v-text-field>
+                  <v-text-field v-else-if="field.type == 'decimal'"
+                  :label="field.label" @change="ev => inputChanged(ev, field)"></v-text-field>
 
-                   <v-select v-else-if="field.type == 'field'"
-                   :label="field.label" @change="ev => inputChanged(ev, field)"></v-select>
-                
-                <!-- <component :is="getFieldFormType(field.type)" :label="field.label" >
-                </component> -->
-
+                  <v-select v-else-if="field.type == 'field'"
+                  :label="field.label"
+                  :items="idClient"
+                  @change="ev => inputChanged(ev, field)"></v-select>
               </v-col>
             </v-row>
           </v-container>
@@ -140,20 +141,24 @@ export default {
     // ---------------MODAL-------------------
     // to open or close modal windows
     dialog: false,
+
     // array contain objects from request api data.action.POST
     fields: [],
 
-    //
+    // value from modal windows inputs
     userImput:{
 
     },
     
 
     // ---------------SELECTOR----------------
+    // User choice
     choice: null,
 
     // ----------------TABLE------------------
+    // API's Request
     requestAPI: [],
+
     // end of api request
     resource: "",
     items: [
@@ -186,29 +191,30 @@ export default {
   },
 
   watch: {
+
+    // Return the result of user choice in => this.resource witch be used to show the table and modal windows
     choice: async function (value) {
       if (value === "PRODUCTS") {
         await this.apiCall("product");
         await this.formRequest("product");
-        // const fields = Object.keys(data[0]);
         this.resource = "product";
       }
       if (value === "CLIENTS") {
         this.apiCall("client");
-
         this.resource = "client";
         await this.formRequest("client");
       }
       if (value === "BILLS") {
         this.apiCall("bill");
-
         this.resource = "bill";
         await this.formRequest("bill");
       }
     },
   },
 
+
   filters: {
+    // Transform iso date in YYYY/MM/DD HH:Mm Date
   formatDate: function (value) {
     if (value) {
       let data = value.replace('T', ' ').substr(0,19)
@@ -220,60 +226,23 @@ export default {
 
 
   methods: {
+    
+    // -------------- API REQUEST ---------------------
 
-    inputChanged(ev, field){
-      console.log("ev" , ev);
-      console.log("field" , field);
-      let apiField = field.label[0].toLowerCase() + field.label.substring(1);
-      this.userImput[apiField]= ev;
-
-      // au clic sur save faire requete axios pour save userInput. Attention si 
-      // datetime => trsf en iso
-    },  
-    // getFieldFormType(type) {
-    //   if (type === "string") {
-    //     return "v-text-field";
-    //   }
-    //   if (type === "boolean") {
-    //     return "v-checkbox";
-    //   }
-    //   if (type === "datetime") {
-    //     return "v-date-picker";
-    //   }
-    //   if (type === "integer" || type === "decimal") {
-    //     return "v-text-field";
-    //   }
-    //   if (type === "field") {
-    //     return "v-select";
-    //   }
-
-    //   return null;
-    // },
-
-    getFieldType(label) {
-      // example : label = "IssuingDate"
-      // from a label get field type from fields
-      
-      const found = this.fields.find(element => label.toLowerCase() == element.label.toLowerCase());
-      if (found == undefined){
-        return;
-      }
-      return found.type;
-    },
-
+    // READ REQUEST
     async apiCall(resource) {
       try {
         const url = `http://127.0.0.1:8000/${resource}/`;
         const { data } = await axios.get(url);
-
         this.requestAPI = data;
-
         return data;
+
       } catch (e) {
         console.error(e);
       }
     },
-
+      
+    // DELETE REQUEST
     async deleteItem(resource, id) {
       try {
         const url = `http://127.0.0.1:8000/${resource}/${id}`;
@@ -287,6 +256,7 @@ export default {
       }
     },
 
+    // OPTIONS REQUEST
     async formRequest(resource) {
       try {
         const url = `http://127.0.0.1:8000/${resource}/`;
@@ -296,6 +266,7 @@ export default {
         delete fields.id;
         this.fields = [];
 
+        //  foreach object get his type and label
         Object.entries(fields).map((item) => {
           const field = {
             type: item[1].type,
@@ -305,14 +276,44 @@ export default {
           this.fields.push(field);
         });
 
+
+        // clean object
         this.userImput={};
         
-
-        // return data;
       } catch (e) {
         console.error(e);
       }
     },
+
+    // -------------- END REQUEST ---------------------
+
+
+    getFieldType(label) {
+      // example : label = "IssuingDate"
+      // from a label get field type from fields
+      
+      const found = this.fields.find(element => label.toLowerCase() == element.label.toLowerCase());
+      if (found == undefined){
+        return;
+      }
+      return found.type;
+    },
+
+
+    // Make the first letter UpperCase to LowerCase
+    inputChanged(ev, field){
+      //  env => the input value from user
+      //  field => object with value and type from api request
+      console.log("field ", field);
+      let apiField = field.label[0].toLowerCase() + field.label.substring(1);
+      this.userImput[apiField]= ev;
+    },  
+
+      // au clic sur save faire requete axios pour save userInput. Attention si 
+      // datetime => trsf en iso
+    
+
+
   },
 };
 </script>

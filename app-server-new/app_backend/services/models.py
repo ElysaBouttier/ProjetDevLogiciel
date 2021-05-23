@@ -46,7 +46,7 @@ class Product(models.Model):
 
 class BillProduct(models.Model):
     id = models.AutoField(primary_key=True)
-    quantity = models.DecimalField(max_digits=7, decimal_places=2)
+    quantity = models.IntegerField()
     idBills = models.ForeignKey('Bill', on_delete=models.CASCADE)
     idProduct = models.ForeignKey('Product', on_delete=models.CASCADE)
 
