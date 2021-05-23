@@ -252,8 +252,7 @@ export default {
         console.log("data", data);
         console.log("userData", userData);
         const url = `http://127.0.0.1:8000/${resource}/`;
-        const { data } = await axios.post(url, data: userData
-        );
+        const { data } = await axios.post({url: url, data: userData});
         console.log("data", data);
 
         
