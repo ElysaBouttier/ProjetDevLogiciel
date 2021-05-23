@@ -14,14 +14,14 @@
 <script>
 // @ is an alias to /src
 import { mapState } from "vuex";
-import Data from "@/components/Data.vue";
+// import Data from "@/components/Data.vue";
 
 export default {
   name: "about",
   props: {},
 
   components: {
-    Data,
+    // Data,
   },
   data: () => ({
     showFormUpdate: false,

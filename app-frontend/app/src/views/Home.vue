@@ -36,7 +36,9 @@
                 :key="i"
               >
                 <p>{{field.label}}</p>
-                <component :is="getFieldFormType(field.type)" :label="field.label" ></component>
+                <component :is="getFieldFormType(field.type)" :label="field.label" >
+                  
+                </component>
 
               </v-col>
             </v-row>
@@ -89,7 +91,7 @@
           
           <td v-for="(prop, key) in data" :key="key">
             <span v-if="getFieldType(key) == 'datetime'">
-              je suis une date : {{prop}}
+              {{prop | formatDate}}
             </span>
             <span v-else>
               {{prop}}
@@ -188,6 +190,17 @@ export default {
       }
     },
   },
+
+  filters: {
+  formatDate: function (value) {
+    if (value) {
+      let data = value.replace('T', ' ').substr(0,19)
+      return data;
+    }
+    return ''
+  }
+  },
+
 
   methods: {
     getFieldFormType(type) {
