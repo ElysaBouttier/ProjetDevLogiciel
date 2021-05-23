@@ -63,7 +63,9 @@
           <v-btn color="blue darken-1" text @click="dialog = false">
             Cancel
           </v-btn>
-          <v-btn color="blue darken-1" text> Save </v-btn>
+          <v-btn color="blue darken-1" text @click="createItem"> 
+            Save 
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -229,6 +231,7 @@ export default {
     
     // -------------- API REQUEST ---------------------
 
+
     // READ REQUEST
     async apiCall(resource) {
       try {
@@ -242,6 +245,26 @@ export default {
       }
     },
       
+    // CREATE REQUEST
+    async createItem(resource) {
+      try {
+        let userData = this.userImput;
+        console.log("data", data);
+        console.log("userData", userData);
+        const url = `http://127.0.0.1:8000/${resource}/`;
+        const { data } = await axios.post(url, data: userData
+        );
+        console.log("data", data);
+
+        
+      } catch (error) {
+        console.log(error);
+      }
+
+    },
+    // async createBill(){
+
+    // },
     // DELETE REQUEST
     async deleteItem(resource, id) {
       try {
@@ -304,7 +327,6 @@ export default {
     inputChanged(ev, field){
       //  env => the input value from user
       //  field => object with value and type from api request
-      console.log("field ", field);
       let apiField = field.label[0].toLowerCase() + field.label.substring(1);
       this.userImput[apiField]= ev;
     },  
