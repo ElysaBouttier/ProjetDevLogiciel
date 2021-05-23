@@ -1,5 +1,5 @@
 <template>
-  <div class="home" >
+  <div class="home">
     <div>
       <p>This is the Home page</p>
     </div>
@@ -35,11 +35,8 @@
                 v-for="(field, i) in fields"
                 :key="i"
               >
-                <v-text-field
-                  hide-details="auto"
-                  :label="field.label"
-                  v-model="form[i]"
-                ></v-text-field>
+                <component :is="getFieldType(field.type)" :label="field.label"></component>
+
               </v-col>
             </v-row>
           </v-container>
@@ -92,6 +89,7 @@
             <button @click="deleteItem(resource, data['id'])">Delete</button>
           </td>
         </tr>
+        {{fields}}
       </tbody>
     </table>
   </div>
@@ -100,36 +98,37 @@
 <script>
 import axios from "axios";
 
+import { VTextField, VCheckbox, VDatePicker } from "vuetify/lib";
+
 export default {
   name: "home",
   props: {},
 
+  components: {
+    VTextField,
+    VCheckbox,
+    VDatePicker,
+  },
+
   data: () => ({
     // ---------------MODAL-------------------
+    // to open or close modal windows
     dialog: false,
-    rules: [
-      (value) => !!value || "Required.",
-      (value) => (value && value.length >= 3) || "Min 3 characters",
-    ],
-
+    // array contain objects from request api data.action.POST
     fields: [],
-    form: {},
-    itemsInFields: [],
 
     // ---------------SELECTOR----------------
-    selectedItem: 1,
     choice: null,
 
     // ----------------TABLE------------------
     requestAPI: [],
-
+    // end of api request
+    resource: "",
     items: [
       { text: "Products", icon: "mdi-clock", value: "PRODUCTS" },
       { text: "Clients", icon: "mdi-account", value: "CLIENTS" },
       { text: "Bills", icon: "mdi-flag", value: "BILLS" },
     ],
-
-    resource: "",
   }),
 
   computed: {
@@ -178,6 +177,55 @@ export default {
   },
 
   methods: {
+    getFieldType(type) {
+      // Object.entries(this.fields)
+      //     .map((item) => {
+      //       console.log("item[1]", item[1].type);
+      //       if (item[1].type === "string") {
+      //         let string = "v-text-field";
+      //         this.test.push(string);
+      //         return
+      //       }
+      //       if (item[1].type === "datetime") {
+      //         let datetime = "v-date-picker";
+      //         this.test.push(datetime);
+      //       }
+      //       if (item[1].type === "integer") {
+      //         let integer = "v-text-field";
+      //          this.test.push(integer);
+      //       }
+      //       if (item[1].type === "decimal") {
+      //         let decimal = "v-text-field";
+      //         this.test.push(decimal);
+      //       }
+      //       if (item[1].type === "field") {
+      //         let field = "v-text-field";
+      //         this.test.push(field);
+      //       }
+      //       if (item[1].type === "boolean") {
+      //         let checkbox = "v-checkbox";
+      //         this.test.push(checkbox);
+      //       }
+      //     })
+      if (type === "string") {
+        return "v-text-field";
+      }
+      if (type === "boolean") {
+        return "v-checkbox";
+      }
+      if (type === "datetime") {
+        return "v-date-picker";
+      }
+      if (type === "integer" || type === "decimal") {
+        return "v-text-field";
+      }
+      if (type === "field") {
+        return "v-select";
+      }
+
+      return null;
+    },
+
     async apiCall(resource) {
       try {
         const url = `http://127.0.0.1:8000/${resource}/`;
@@ -211,30 +259,18 @@ export default {
         const { data } = await axios.options(url);
         const fields = data.actions.POST;
         delete fields.id;
-        this.fields = fields;
+        this.fields = [];
 
-      Object.entries(this.fields).map(item => {
-        console.log("item[1]" , item[1].type);
-        if (item[1].type == "string"){
-          console.log("coucou");
-        }
-        if(item[1].type == "datetime"){
-          console.log("coucou");
-        }
-        if(item[1].type == "integer"){
-          console.log("coucou");
-        }
-        if(item[1].type == "decimal"){
-          console.log("coucou");
-        }
-        if(item[1].type == "field"){
-          console.log("coucou");
-        }
-      })
+        Object.entries(fields).map((item) => {
+          const field = {
+            type: item[1].type,
+            label: item[1].label,
+          };
 
+          this.fields.push(field);
+        });
 
-
-        return data;
+        // return data;
       } catch (e) {
         console.error(e);
       }

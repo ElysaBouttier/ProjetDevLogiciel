@@ -22,12 +22,9 @@
         </v-btn>
 
         <v-btn>
-          <router-link to="/home">Home</router-link>
+          <router-link to="/">Home</router-link>
         </v-btn>
 
-        <v-btn>
-          <router-link to="/test">Test</router-link>
-        </v-btn>
     </v-app>
   </div>
 </template>
