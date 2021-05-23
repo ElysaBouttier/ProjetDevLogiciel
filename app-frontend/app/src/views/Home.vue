@@ -36,7 +36,7 @@
                 :key="i"
               >
                 <p>{{field.label}}</p>
-                <component :is="getFieldType(field.type)" :label="field.label" ></component>
+                <component :is="getFieldFormType(field.type)" :label="field.label" ></component>
 
               </v-col>
             </v-row>
@@ -72,7 +72,7 @@
     <!-- ----------------TABLE------------------- -->
     <!-- ---------------------------------------- -->
 
-    <table class="table-api">
+    <v-simple-table class="table-api">
       <thead>
         <tr>
           <th>
@@ -86,7 +86,16 @@
       </thead>
       <tbody>
         <tr v-for="(data, index) in requestAPI" :key="index">
-          <td v-for="(prop, i) in data" :key="i">{{ prop }}</td>
+          
+          <td v-for="(prop, key) in data" :key="key">
+            <span v-if="getFieldType(key) == 'datetime'">
+              je suis une date : {{prop}}
+            </span>
+            <span v-else>
+              {{prop}}
+            </span>
+            
+          </td>
 
           <td>
             <button>Update</button> |
@@ -94,7 +103,7 @@
           </td>
         </tr>
       </tbody>
-    </table>
+    </v-simple-table>
   </div>
 </template>
 
@@ -181,7 +190,7 @@ export default {
   },
 
   methods: {
-    getFieldType(type) {
+    getFieldFormType(type) {
       if (type === "string") {
         return "v-text-field";
       }
@@ -199,6 +208,17 @@ export default {
       }
 
       return null;
+    },
+
+    getFieldType(label) {
+      // example : label = "IssuingDate"
+      // from a label get field type from fields
+      
+      const found = this.fields.find(element => label.toLowerCase() == element.label.toLowerCase());
+      if (found == undefined){
+        return;
+      }
+      return found.type;
     },
 
     async apiCall(resource) {
@@ -262,9 +282,8 @@ export default {
   margin-top: 5%;
 }
 .table-api{
-  th, td{
-    border: 1px solid black;
-    padding: 0.5em 1em;
+  thead {
+    background-color: rgb(206, 206, 206);
   }
 }
 </style>

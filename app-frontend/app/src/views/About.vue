@@ -1,35 +1,13 @@
 <template>
   <div class="about">
-    <v-container fluid>
-      <v-row align="center">
-        <v-col
-          class="d-flex"
-          cols="12"
-          sm="6"
-        >
-          <v-select
-            :items="items"
-            label="Faites votre choix"
-          ></v-select>
-        </v-col>
-      </v-row>
-    </v-container>
-    <template v-if="!showFormUpdate">
-      <Data :data="data" v-for="data in datas" :key="data.id" />
-      <v-fab-transition>
-        <v-btn
-          v-show="!hidden"
-          color="pink"
-          dark
-          right
-          fab
-          absolute
-          @click="showFormUpdate = true"
-        >
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </v-fab-transition>
-    </template>
+    
+    <h3> Logiciel adaptatif de gestion de facture de supermarché.</h3>
+    <p>Crée par Elysa Bouttier et Loup Bruneau dans le cadre de la formation Bachelore 3 Informatique développement logiciel </p>
+    <p>Langue : Anglais </p>
+    <p>derniere modification 23/05/2021</p>
+    <p>Django version 3.2</p>
+    <p>Vue.js version 3.0.11</p>
+    
   </div>
 </template>
 
