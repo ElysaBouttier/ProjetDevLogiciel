@@ -246,17 +246,19 @@ export default {
     },
       
     // CREATE REQUEST
-    async createItem(resource) {
+    async createItem() {
+      console.log("this.resource", this.resource);
+      const resource = this.resource;
       try {
+      
         let userData = this.userImput;
-        console.log("data", data);
-        console.log("userData", userData);
         const url = `http://127.0.0.1:8000/${resource}/`;
-        const { data } = await axios.post({url: url, data: userData});
-        console.log("data", data);
+        await axios.post(url, userData);
+        await this.apiCall(resource);
+        await this.formRequest(resource);
+        this.dialog = false
 
-        
-      } catch (error) {
+} catch (error) {
         console.log(error);
       }
 
