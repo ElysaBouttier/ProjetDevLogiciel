@@ -35,7 +35,8 @@
                 v-for="(field, i) in fields"
                 :key="i"
               >
-                <component :is="getFieldType(field.type)" :label="field.label"></component>
+                <p>{{field.label}}</p>
+                <component :is="getFieldType(field.type)" :label="field.label" ></component>
 
               </v-col>
             </v-row>
@@ -71,11 +72,14 @@
     <!-- ----------------TABLE------------------- -->
     <!-- ---------------------------------------- -->
 
-    <table v-if="requestAPI.length">
+    <table class="table-api">
       <thead>
         <tr>
-          <th v-for="(data, index) in requestAPI[0]" :key="index">
-            {{ index }}
+          <th>
+            Id
+          </th>
+          <th v-for="(data, index) in fields" :key="index">
+            {{ data.label }}
           </th>
           <th>Actions</th>
         </tr>
@@ -89,7 +93,6 @@
             <button @click="deleteItem(resource, data['id'])">Delete</button>
           </td>
         </tr>
-        {{fields}}
       </tbody>
     </table>
   </div>
@@ -116,6 +119,7 @@ export default {
     dialog: false,
     // array contain objects from request api data.action.POST
     fields: [],
+    
 
     // ---------------SELECTOR----------------
     choice: null,
@@ -178,35 +182,6 @@ export default {
 
   methods: {
     getFieldType(type) {
-      // Object.entries(this.fields)
-      //     .map((item) => {
-      //       console.log("item[1]", item[1].type);
-      //       if (item[1].type === "string") {
-      //         let string = "v-text-field";
-      //         this.test.push(string);
-      //         return
-      //       }
-      //       if (item[1].type === "datetime") {
-      //         let datetime = "v-date-picker";
-      //         this.test.push(datetime);
-      //       }
-      //       if (item[1].type === "integer") {
-      //         let integer = "v-text-field";
-      //          this.test.push(integer);
-      //       }
-      //       if (item[1].type === "decimal") {
-      //         let decimal = "v-text-field";
-      //         this.test.push(decimal);
-      //       }
-      //       if (item[1].type === "field") {
-      //         let field = "v-text-field";
-      //         this.test.push(field);
-      //       }
-      //       if (item[1].type === "boolean") {
-      //         let checkbox = "v-checkbox";
-      //         this.test.push(checkbox);
-      //       }
-      //     })
       if (type === "string") {
         return "v-text-field";
       }
@@ -285,5 +260,11 @@ export default {
   flex-direction: column;
   margin: auto;
   margin-top: 5%;
+}
+.table-api{
+  th, td{
+    border: 1px solid black;
+    padding: 0.5em 1em;
+  }
 }
 </style>
