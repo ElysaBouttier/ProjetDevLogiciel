@@ -103,7 +103,6 @@
       </thead>
       <tbody>
         <tr v-for="(data, index) in requestAPI" :key="index">
-          
           <td v-for="(prop, key) in data" :key="key">
             <span v-if="getFieldType(key) == 'datetime'">
               {{prop | formatDate}}
@@ -144,7 +143,7 @@ export default {
     // to open or close modal windows
     dialog: false,
 
-    // array contain objects from request api data.action.POST
+    // array contain objects from request api data.action.POST (label and type)
     fields: [],
 
     // value from modal windows inputs
@@ -247,10 +246,9 @@ export default {
       
     // CREATE REQUEST
     async createItem() {
-      console.log("this.resource", this.resource);
       const resource = this.resource;
       try {
-      
+        
         let userData = this.userImput;
         const url = `http://127.0.0.1:8000/${resource}/`;
         await axios.post(url, userData);
